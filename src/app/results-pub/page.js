@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS , ArcElement , Tooltip , Legend } from "chart.js";
+import Navbar from "@/components/navbar";
 
 ChartJS.register(ArcElement,Tooltip , Legend);
 
@@ -103,9 +104,9 @@ export default function ResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col items-center justify-center p-6">
-        
-      <div className="w-full max-w-5xl flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col items-center justify-center ">
+        <Navbar/>
+      <div className="w-full max-w-5xl flex flex-col md:flex-row gap-6 mt-2">
 
         <Card className="md:w-1/3 p-6">
         
