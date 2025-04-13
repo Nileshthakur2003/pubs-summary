@@ -1,19 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react"; // Import Suspense
 import Navbar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress"; // Import ShadCN Progress component
 import { useSearchParams, useRouter } from "next/navigation"; // Fetch query parameters
 
+// Helper function to extract `pid` from the URL
 function extractPid(url) {
   const regex = /pid\/(\d+\/\d+)/;
   const match = url.match(regex);
-  return match ? match[1] : null; 
+  return match ? match[1] : null;
 }
 
-export default function AuthorSearchResults() {
+// Core component for Author Search Results
+function AuthorSearchResultsContent() {
   const searchParams = useSearchParams(); // Access URL query parameters
   const name = searchParams.get("name"); // Get the `name` prop from the URL
 
@@ -71,6 +73,77 @@ export default function AuthorSearchResults() {
   };
 
   return (
+    <div className="container mx-auto py-6 px-4">
+      <h2 className="text-2xl font-bold mb-4 text-zinc-800">Select Author from:</h2>
+
+      {/* ShadCN Progress Component for Loading State */}
+      {loading && (
+        <div className="my-4">
+          <Progress className="w-full" /> {/* Progress bar with optional value */}
+        </div>
+      )}
+
+      {error && <p className="text-center text-red-500">{error}</p>}
+
+      {/* Results Display */}
+      {searchResults.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {searchResults.map((author, index) => (
+            <Card key={index} className="p-6 bg-white border border-zinc-300 shadow-md rounded-lg">
+              <h3 className="text-lg font-bold text-zinc-800 mb-2">{author.info.author || "No Name Available"}</h3>
+              <p className="text-sm text-zinc-600 mb-1">
+                <strong>URL:</strong>{" "}
+                {author.info.url ? (
+                  <a
+                    href={author.info.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {author.info.url}
+                  </a>
+                ) : (
+                  "No URL Available"
+                )}
+              </p>
+              <p className="text-sm text-zinc-600">
+                <strong>ID:</strong> {author["@id"] || "No ID Available"}
+              </p>
+              {/* Corrected onClick Handler */}
+              <Button
+                className="bg-zinc-900 text-white px-4 py-2 rounded hover:bg-zinc-800"
+                onClick={() =>
+                  handleAuthorSelection({
+                    authorName: author.info.author,
+                    pid: extractPid(author.info?.url),
+                  })
+                }
+              >
+                Proceed with Author
+              </Button>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-zinc-600">No authors found. Please refine your search.</p>
+      )}
+
+      {/* Go Back Button */}
+      <div className="mt-6 flex justify-center">
+        <Button
+          className="bg-zinc-200 text-zinc-900 px-4 py-2 rounded hover:bg-zinc-100"
+          onClick={() => router.push("/search")}
+        >
+          Go Back to Search
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Wrapper Component with Suspense Boundary
+export default function AuthorSearchResults() {
+  return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
       {/* Navbar */}
       <Navbar className="bg-zinc-50 shadow-md p-4">
@@ -80,66 +153,10 @@ export default function AuthorSearchResults() {
         </div>
       </Navbar>
 
-      <div className="container mx-auto py-6 px-4">
-        <h2 className="text-2xl font-bold mb-4 text-zinc-800">Select Author from:</h2>
-
-        {/* ShadCN Progress Component for Loading State */}
-        {loading && (
-          <div className="my-4">
-            <Progress className="w-full" /> {/* Progress bar with optional value */}
-          </div>
-        )}
-
-        {error && <p className="text-center text-red-500">{error}</p>}
-
-        {/* Results Display */}
-        {searchResults.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {searchResults.map((author, index) => (
-              <Card key={index} className="p-6 bg-white border border-zinc-300 shadow-md rounded-lg">
-                <h3 className="text-lg font-bold text-zinc-800 mb-2">{author.info.author || "No Name Available"}</h3>
-                <p className="text-sm text-zinc-600 mb-1">
-                  <strong>URL:</strong>{" "}
-                  {author.info.url ? (
-                    <a
-                      href={author.info.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      {author.info.url}
-                    </a>
-                  ) : (
-                    "No URL Available"
-                  )}
-                </p>
-                <p className="text-sm text-zinc-600">
-                  <strong>ID:</strong> {author["@id"] || "No ID Available"}
-                </p>
-                {/* Corrected onClick Handler */}
-                <Button
-                  className="bg-zinc-900 text-white px-4 py-2 rounded hover:bg-zinc-800"
-                  onClick={() => handleAuthorSelection({authorName:author.info.author,pid:extractPid(author.info?.url)})}
-                >
-                  Proceed with Author
-                </Button>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-zinc-600">No authors found. Please refine your search.</p>
-        )}
-
-        {/* Go Back Button */}
-        <div className="mt-6 flex justify-center">
-          <Button
-            className="bg-zinc-200 text-zinc-900 px-4 py-2 rounded hover:bg-zinc-100"
-            onClick={() => router.push("/search")}
-          >
-            Go Back to Search
-          </Button>
-        </div>
-      </div>
+      {/* Suspense Boundary */}
+      <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+        <AuthorSearchResultsContent />
+      </Suspense>
     </div>
   );
 }
