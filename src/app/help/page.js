@@ -8,7 +8,7 @@ const HelpPage = () => {
     {
       question: "How do I search for authors?",
       answer:
-        "To search for authors, enter the author's name in the search bar on the homepage and press the search button. You'll be redirected to the results page with relevant authors.",
+        "To search for authors, enter the author&apos;s name in the search bar on the homepage and press the search button. You&apos;ll be redirected to the results page with relevant authors.",
     },
     {
       question: "How can I filter publications?",
@@ -23,7 +23,7 @@ const HelpPage = () => {
     {
       question: "How do I view author profiles?",
       answer:
-        "On the left-hand side of the results page, you'll find the author's profile, displaying all available information such as name, specialization, location, and more.",
+        "On the left-hand side of the results page, you&apos;ll find the author&apos;s profile, displaying all available information such as name, specialization, location, and more.",
     },
     {
       question: "How can I contact support?",
@@ -55,9 +55,9 @@ const HelpPage = () => {
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-4">How to Use the Application</h2>
           <ol className="list-decimal list-inside text-zinc-700">
-            <li>Navigate to the homepage and enter the authors name in the search bar.</li>
+            <li>Navigate to the homepage and enter the author&apos;s name in the search bar.</li>
             <li>Browse through the search results to find the relevant author.</li>
-            <li>View the author's profile on the left-hand side of the results page.</li>
+            <li>View the author&apos;s profile on the left-hand side of the results page.</li>
             <li>Filter publications (books, journals, or other) using the filters provided.</li>
             <li>Click on publication links to view more details or external links.</li>
           </ol>
@@ -70,7 +70,13 @@ const HelpPage = () => {
             If you have additional questions or need further assistance, feel free to contact our support team.
           </p>
           <p className="mb-4">
-            Email: <a href="mailto:support@example.com" className="text-blue-500 hover:underline">support@example.com</a>
+            Email:{" "}
+            <a
+              href="mailto:support@example.com"
+              className="text-blue-500 hover:underline"
+            >
+              support@example.com
+            </a>
           </p>
           <p className="mb-4">Phone: +1-800-555-1234</p>
 
@@ -78,7 +84,9 @@ const HelpPage = () => {
           <form className="max-w-md bg-white shadow-md rounded-md p-4">
             <h3 className="text-xl font-bold mb-4">Send us a message</h3>
             <div className="mb-4">
-              <label htmlFor="name" className="block font-medium">Your Name</label>
+              <label htmlFor="name" className="block font-medium">
+                Your Name
+              </label>
               <input
                 type="text"
                 id="name"
@@ -88,7 +96,9 @@ const HelpPage = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="email" className="block font-medium">Your Email</label>
+              <label htmlFor="email" className="block font-medium">
+                Your Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -98,7 +108,9 @@ const HelpPage = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="message" className="block font-medium">Your Message</label>
+              <label htmlFor="message" className="block font-medium">
+                Your Message
+              </label>
               <textarea
                 id="message"
                 name="message"
