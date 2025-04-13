@@ -55,7 +55,7 @@ const HelpPage = () => {
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-4">How to Use the Application</h2>
           <ol className="list-decimal list-inside text-zinc-700">
-            <li>Navigate to the homepage and enter the author's name in the search bar.</li>
+            <li>Navigate to the homepage and enter the authors name in the search bar.</li>
             <li>Browse through the search results to find the relevant author.</li>
             <li>View the author's profile on the left-hand side of the results page.</li>
             <li>Filter publications (books, journals, or other) using the filters provided.</li>
