@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import Next.js router for navigation
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import Navbar from "@/components/navbar"; // Import Navbar component
+import Navbar from "@/components/navbar";
 
 export default function ManualInputPage() {
+  const router = useRouter(); // Initialize the router for page navigation
+
   // State for manual input
   const [facultyDetails, setFacultyDetails] = useState({
     name: "",
@@ -47,9 +50,18 @@ export default function ManualInputPage() {
   // Submission handler
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Faculty Details:", facultyDetails);
-    console.log("Filters:", filters);
-    // API logic for processing manual input and filters goes here
+
+    // Combine faculty details and filters
+    const formData = {
+      ...facultyDetails,
+      ...filters,
+    };
+
+    // Convert data to query parameters
+    const query = new URLSearchParams(formData).toString();
+
+    // Navigate to another page and pass data through the URL
+    router.push(`/authors-filter?${query}`);
   };
 
   return (

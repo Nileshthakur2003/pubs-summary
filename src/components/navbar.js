@@ -12,15 +12,15 @@ export default function Navbar() {
   };
 
   const handleBibTexSearchNavigation = () => {
-    router.push("/search-pub-manual"); // Navigate to BibTEX/Excel Search
+    router.push("/search-pub"); // Navigate to BibTEX/Excel Search
   };
 
   const handleManualSearchNavigation = () => {
-    router.push("/search-pub"); // Navigate to Manual Search
+    router.push("/search-pub-manual"); // Navigate to Manual Search
   };
 
   const handleHelpNavigation = () => {
-    router.push("#submit"); // Navigate to Help (can be replaced with a valid route)
+    router.push("/help"); // Navigate to Help (can be replaced with a valid route)
   };
 
   return (
