@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import  NavBar  from "@/components/navbar";
+import NavBar from "@/components/navbar";
+import { useRouter } from "next/navigation"; // For navigation to /results-pub
 
-export default function UploadFilesPage() {
-  const [excelFile, setExcelFile] = useState(null);
-  const [bibtexFile, setBibtexFile] = useState(null);
+export default function searchPub() {
+  const [file, setFile] = useState(null); // Single file upload state
+  const router = useRouter(); // Initialize Next.js router for navigation
 
   const [filters, setFilters] = useState({
     startDate: "",
@@ -21,12 +21,8 @@ export default function UploadFilesPage() {
     citationCount: "",
   });
 
-  const handleExcelUpload = (e) => {
-    setExcelFile(e.target.files[0]);
-  };
-
-  const handleBibtexUpload = (e) => {
-    setBibtexFile(e.target.files[0]);
+  const handleFileUpload = (e) => {
+    setFile(e.target.files[0]); // Store the uploaded file in state
   };
 
   const handleFilterChange = (e) => {
@@ -37,49 +33,65 @@ export default function UploadFilesPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Excel File:", excelFile);
-    console.log("BibTeX File:", bibtexFile);
-    console.log("Filters:", filters);
+
+    try {
+      // Initialize FormData for the file and filter data
+      const formData = new FormData();
+      if (file) formData.append("file", file);
+
+      // Append filter data
+      Object.entries(filters).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Make API request to upload and process the data
+      const response = await fetch("/api/process-files", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Navigate to /results-pub with the processed data
+        router.push({
+          pathname: "/results-pub",
+          query: { data: JSON.stringify(result.data) },
+        });
+      } else {
+        console.error("Error processing file:", result.error);
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col">
-      {/* Classy Navigation Bar */}
-      <NavBar/>
+      {/* Navigation Bar */}
+      <NavBar />
 
       {/* Page Content */}
       <div className="flex-grow flex items-center justify-center p-6">
         <Card className="w-full max-w-5xl p-8">
-          <h1 className="text-2xl font-bold mb-6 text-center">Upload Publication Files and Filters</h1>
+          <h1 className="text-2xl font-bold mb-6 text-center">Upload Publication File and Filters</h1>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Excel Upload */}
-            <div id="upload">
-              <Label htmlFor="excel-file" className="block mb-2">Upload Excel File</Label>
-              <Input
-                id="excel-file"
-                type="file"
-                accept=".xlsx"
-                onChange={handleExcelUpload}
-                className="w-full"
-              />
-            </div>
-
-            {/* BibTeX Upload */}
+            {/* File Upload */}
             <div>
-              <Label htmlFor="bibtex-file" className="block mb-2">Upload BibTeX File</Label>
+              <Label htmlFor="file" className="block mb-2">Upload File (.xlsx or .bib)</Label>
               <Input
-                id="bibtex-file"
+                id="file"
                 type="file"
-                accept=".bib"
-                onChange={handleBibtexUpload}
+                accept=".xlsx,.bib"
+                onChange={handleFileUpload}
                 className="w-full"
               />
             </div>
 
             {/* Start Date */}
-            <div id="filters">
+            <div>
               <Label htmlFor="startDate" className="block mb-2">Start Date</Label>
               <Input
                 id="startDate"
@@ -107,20 +119,15 @@ export default function UploadFilesPage() {
             {/* Category */}
             <div>
               <Label htmlFor="category" className="block mb-2">Category</Label>
-              <Select
-                onValueChange={(value) =>
-                  setFilters((prevFilters) => ({ ...prevFilters, category: value }))
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="journal">Journal</SelectItem>
-                  <SelectItem value="conference">Conference</SelectItem>
-                  <SelectItem value="book">Book</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                id="category"
+                name="category"
+                type="text"
+                placeholder="Enter category"
+                value={filters.category}
+                onChange={handleFilterChange}
+                className="w-full"
+              />
             </div>
 
             {/* Specialization */}
@@ -166,8 +173,8 @@ export default function UploadFilesPage() {
             </div>
 
             {/* Submit Button */}
-            <div id="submit" className="col-span-full">
-              <Button type="submit" className="w-full">Submit Files and Filters</Button>
+            <div className="col-span-full">
+              <Button type="submit" className="w-full">Submit File and Filters</Button>
             </div>
           </form>
         </Card>

@@ -1,49 +1,109 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
-  const router = useRouter(); // Initialize the useRouter hook
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Toggle mobile menu
+  const router = useRouter(); // Initialize Next.js router
 
-  // Navigation handlers
-  const handleHomeNavigation = () => {
-    router.push("/"); // Navigate to Home
-  };
-
-  const handleBibTexSearchNavigation = () => {
-    router.push("/search-pub"); // Navigate to BibTEX/Excel Search
-  };
-
-  const handleManualSearchNavigation = () => {
-    router.push("/search-pub-manual"); // Navigate to Manual Search
-  };
-
-  const handleHelpNavigation = () => {
-    router.push("/help"); // Navigate to Help (can be replaced with a valid route)
+  const handleNavigation = (path) => {
+    setIsMobileMenuOpen(false); // Close the menu after navigation
+    router.push(path); // Navigate to the selected route
   };
 
   return (
     <nav className="bg-zinc-100 border-b border-zinc-300 w-full">
-      <div className="container mx-auto flex justify-between h-12 px-4 mt-2">
-        {/* Home navigation when clicking title */}
-        <h1 className="text-lg font-medium text-zinc-800 cursor-pointer" onClick={handleHomeNavigation}>
+      <div className="container mx-auto flex justify-between h-12 px-4 items-center">
+        {/* Logo */}
+        <h1
+          className="text-lg font-medium text-zinc-800 cursor-pointer"
+          onClick={() => handleNavigation("/")}
+        >
           Publication Summarizer
         </h1>
 
-        {/* Navigation Buttons */}
-        <div className="flex space-x-6">
-          <Button variant="link" className="text-zinc-600 hover:text-zinc-900" onClick={handleBibTexSearchNavigation}>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex space-x-6">
+          <button
+            className="text-zinc-600 hover:text-zinc-900"
+            onClick={() => handleNavigation("/search-pub")}
+          >
             BibTEX/Excel Search
-          </Button>
-          <Button variant="link" className="text-zinc-600 hover:text-zinc-900" onClick={handleManualSearchNavigation}>
+          </button>
+          <button
+            className="text-zinc-600 hover:text-zinc-900"
+            onClick={() => handleNavigation("/search-pub-manual")}
+          >
             Manual Search
-          </Button>
-          <Button variant="link" className="text-zinc-600 hover:text-zinc-900" onClick={handleHelpNavigation}>
+          </button>
+          <button
+            className="text-zinc-600 hover:text-zinc-900"
+            onClick={() => handleNavigation("/help")}
+          >
             Help
-          </Button>
+          </button>
         </div>
+
+        {/* Mobile Hamburger Menu */}
+        <button
+          className="md:hidden text-zinc-600 hover:text-zinc-900"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle navigation menu"
+        >
+          {/* Hamburger Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d={
+                isMobileMenuOpen
+                  ? "M6 18L18 6M6 6l12 12" // Close icon
+                  : "M4 6h16M4 12h16M4 18h16" // Hamburger icon
+              }
+            />
+          </svg>
+        </button>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-zinc-100 border-t border-zinc-300">
+          <ul className="flex flex-col space-y-4 p-4">
+            <li>
+              <button
+                className="w-full text-left text-zinc-600 hover:text-zinc-900"
+                onClick={() => handleNavigation("/search-pub")}
+              >
+                BibTEX/Excel Search
+              </button>
+            </li>
+            <li>
+              <button
+                className="w-full text-left text-zinc-600 hover:text-zinc-900"
+                onClick={() => handleNavigation("/search-pub-manual")}
+              >
+                Manual Search
+              </button>
+            </li>
+            <li>
+              <button
+                className="w-full text-left text-zinc-600 hover:text-zinc-900"
+                onClick={() => handleNavigation("/help")}
+              >
+                Help
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }
