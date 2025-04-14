@@ -9,7 +9,7 @@ import NavBar from "@/components/navbar";
 import { useRouter } from "next/navigation"; // For navigation to /results-pub
 
 export default function searchPub() {
-  const [file, setFile] = useState(null); // Single file upload state
+  const [File, setFile] = useState(null); // Single File upload state
   const router = useRouter(); // Initialize Next.js router for navigation
 
   const [filters, setFilters] = useState({
@@ -22,7 +22,7 @@ export default function searchPub() {
   });
 
   const handleFileUpload = (e) => {
-    setFile(e.target.files[0]); // Store the uploaded file in state
+    setFile(e.target.Files[0]); // Store the uploaded File in state
   };
 
   const handleFilterChange = (e) => {
@@ -37,9 +37,9 @@ export default function searchPub() {
     e.preventDefault();
 
     try {
-      // Initialize FormData for the file and filter data
+      // Initialize FormData for the File and filter data
       const formData = new FormData();
-      if (file) formData.append("file", file);
+      if (File) formData.append("File", File);
 
       // Append filter data
       Object.entries(filters).forEach(([key, value]) => {
@@ -47,7 +47,7 @@ export default function searchPub() {
       });
 
       // Make API request to upload and process the data
-      const response = await fetch("/api/process-files", {
+      const response = await fetch("/api/process-Files", {
         method: "POST",
         body: formData,
       });
@@ -61,7 +61,7 @@ export default function searchPub() {
           query: { data: JSON.stringify(result.data) },
         });
       } else {
-        console.error("Error processing file:", result.error);
+        console.error("Error processing File:", result.error);
       }
     } catch (error) {
       console.error("An unexpected error occurred:", error);
@@ -80,10 +80,10 @@ export default function searchPub() {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* File Upload */}
             <div>
-              <Label htmlFor="file" className="block mb-2">Upload File (.xlsx or .bib)</Label>
+              <Label htmlFor="File" className="block mb-2">Upload File (.xlsx or .bib)</Label>
               <Input
-                id="file"
-                type="file"
+                id="File"
+                type="File"
                 accept=".xlsx,.bib"
                 onChange={handleFileUpload}
                 className="w-full"
