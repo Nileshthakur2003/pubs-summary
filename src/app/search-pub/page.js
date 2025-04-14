@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import NavBar from "@/components/navbar";
 import { useRouter } from "next/navigation"; // For navigation to /results-pub
 
-export default function searchPub() {
+export default function SearchPub() {
   const [File, setFile] = useState(null); // Single File upload state
   const router = useRouter(); // Initialize Next.js router for navigation
 
