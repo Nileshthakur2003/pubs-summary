@@ -1,6 +1,6 @@
-"use client";
+"use client"; // Ensure this remains at the top of the file
 
-import { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,10 @@ import { useSearchParams, useRouter } from "next/navigation"; // Fetch query par
 function extractPid(url) {
   const regex = /pid\/(\d+\/\d+)/;
   const match = url.match(regex);
-  return match ? match[1] : null; 
+  return match ? match[1] : null;
 }
 
-export default function AuthorSearchResults() {
+function AuthorSearchResults() {
   const searchParams = useSearchParams(); // Access URL query parameters
   const name = searchParams.get("name"); // Get the `name` prop from the URL
 
@@ -31,11 +31,9 @@ export default function AuthorSearchResults() {
     const fetchResults = async () => {
       try {
         setLoading(true);
-        // Example API call using the name from props
         const response = await fetch(`/api/dblp/searchAuthor?query=${name}`);
         const data = await response.json();
 
-        // Check if results are available
         if (data?.result?.hits?.hit) {
           setSearchResults(data.result.hits.hit);
         } else {
@@ -55,23 +53,16 @@ export default function AuthorSearchResults() {
   const handleAuthorSelection = (authordata) => {
     if (!authordata) return;
 
-    // Get current parameters from searchParams
     let currentParams = Object.fromEntries(searchParams.entries());
-
-    // Remove "name" parameter and add "author" parameter
     delete currentParams["name"];
     currentParams["author"] = authordata.authorName;
     currentParams["pid"] = encodeURIComponent(authordata.pid);
 
-    // Reconstruct query string
     const updatedQuery = new URLSearchParams(currentParams).toString();
-
-    // Navigate to results-pub page with updated query
     router.push(`/results-pub?${updatedQuery}`);
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
       {/* Navbar */}
       <Navbar className="bg-zinc-50 shadow-md p-4">
@@ -84,16 +75,14 @@ export default function AuthorSearchResults() {
       <div className="container mx-auto py-6 px-4">
         <h2 className="text-2xl font-bold mb-4 text-zinc-800">Select Author from:</h2>
 
-        {/* ShadCN Progress Component for Loading State */}
         {loading && (
           <div className="my-4">
-            <Progress className="w-full" /> {/* Progress bar with optional value */}
+            <Progress className="w-full" /> {/* Progress bar */}
           </div>
         )}
 
         {error && <p className="text-center text-red-500">{error}</p>}
 
-        {/* Results Display */}
         {searchResults.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {searchResults.map((author, index) => (
@@ -117,10 +106,14 @@ export default function AuthorSearchResults() {
                 <p className="text-sm text-zinc-600">
                   <strong>ID:</strong> {author["@id"] || "No ID Available"}
                 </p>
-                {/* Corrected onClick Handler */}
                 <Button
                   className="bg-zinc-900 text-white px-4 py-2 rounded hover:bg-zinc-800"
-                  onClick={() => handleAuthorSelection({authorName:author.info.author,pid:extractPid(author.info?.url)})}
+                  onClick={() =>
+                    handleAuthorSelection({
+                      authorName: author.info.author,
+                      pid: extractPid(author.info?.url),
+                    })
+                  }
                 >
                   Proceed with Author
                 </Button>
@@ -131,7 +124,6 @@ export default function AuthorSearchResults() {
           <p className="text-center text-zinc-600">No authors found. Please refine your search.</p>
         )}
 
-        {/* Go Back Button */}
         <div className="mt-6 flex justify-center">
           <Button
             className="bg-zinc-200 text-zinc-900 px-4 py-2 rounded hover:bg-zinc-100"
@@ -142,6 +134,14 @@ export default function AuthorSearchResults() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Export the page with Suspense wrapper
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthorSearchResults />
     </Suspense>
   );
 }
