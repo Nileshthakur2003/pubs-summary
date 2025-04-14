@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navbar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,7 @@ export default function AuthorSearchResults() {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
       {/* Navbar */}
       <Navbar className="bg-zinc-50 shadow-md p-4">
@@ -141,5 +142,6 @@ export default function AuthorSearchResults() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
