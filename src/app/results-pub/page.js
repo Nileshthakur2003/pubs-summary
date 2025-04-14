@@ -14,7 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function ResultsPage() {
   const searchParams = useSearchParams();
   const authorName = searchParams.get("author");
-  const authorPid = searchParams.get("pid");
+  //const authorPid = searchParams.get("pid");
 
   const [authorProfile, setAuthorProfile] = useState(null);
   const [publications, setPublications] = useState([]);
@@ -35,7 +35,7 @@ export default function ResultsPage() {
         const profileResponse = await axios.get(`/api/dblp/searchAuthor?query=${authorName}`);
         const profileData = profileResponse.data;
 
-        const publicationsResponse = await axios.get(`/api/dblp/fetchPublications?query=${authorName}&pid=${authorPid}`);
+        const publicationsResponse = await axios.get(`/api/dblp/fetchPublications?query=${authorName}`);
         const publicationsData = publicationsResponse.data;
 
         if (publicationsResponse.status === 404 || publicationsData.status === "NODATA") {
