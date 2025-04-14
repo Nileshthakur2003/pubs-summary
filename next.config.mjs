@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        missingSuspenseWithCSRBailout: false,
-      },
-};
-
-export default nextConfig;
+      // Enable experimental suspense handling only when properly implemented
+      missingSuspenseWithCSRBailout: false,
+    },
+  };
+  
+  export default nextConfig;
