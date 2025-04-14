@@ -2,7 +2,6 @@
 const nextConfig = {
     experimental: {
       // Enable experimental suspense handling only when properly implemented
-      missingSuspenseWithCSRBailout: false,
     },
   };
   

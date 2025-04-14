@@ -1,20 +1,36 @@
+// app/results-pub/page.tsx
 "use client";
+import { Suspense } from "react";
+
+function ResultsPageWrapper() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Loading...</div>}>
+      <ResultsPageInner />
+    </Suspense>
+  );
+}
+
+export default ResultsPageWrapper;
+
+// ==========================
+// CLIENT COMPONENT STARTS
+// ==========================
+
 
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function ResultsPage() {
+function ResultsPageInner() {
   const searchParams = useSearchParams();
   const authorName = searchParams.get("author");
-  //const authorPid = searchParams.get("pid");
+  const authorPid = searchParams.get("pid");
 
   const [authorProfile, setAuthorProfile] = useState(null);
   const [publications, setPublications] = useState([]);
@@ -35,7 +51,7 @@ export default function ResultsPage() {
         const profileResponse = await axios.get(`/api/dblp/searchAuthor?query=${authorName}`);
         const profileData = profileResponse.data;
 
-        const publicationsResponse = await axios.get(`/api/dblp/fetchPublications?query=${authorName}`);
+        const publicationsResponse = await axios.get(`/api/dblp/fetchPublications?query=${authorName}&pid=${authorPid}`);
         const publicationsData = publicationsResponse.data;
 
         if (publicationsResponse.status === 404 || publicationsData.status === "NODATA") {
@@ -90,9 +106,7 @@ export default function ResultsPage() {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : authorProfile ? (
-              <>
-                <h3 className="text-3xl">{authorName}</h3>
-              </>
+              <h3 className="text-3xl">{authorName}</h3>
             ) : (
               <p>No profile data found.</p>
             )}
@@ -106,7 +120,6 @@ export default function ResultsPage() {
               </div>
             </div>
           </Card>
-
         </div>
 
         {/* Right Section */}
@@ -122,7 +135,7 @@ export default function ResultsPage() {
                     className="flex flex-col md:flex-row bg-white rounded-md shadow-md p-4 space-y-2 md:space-y-0 md:space-x-4"
                   >
                     <div className="w-full md:w-1/4 text-justify">
-                      <strong>{publication.title}</strong> 
+                      <strong>{publication.title}</strong>
                     </div>
                     <div className="w-full md:w-1/4">
                       <strong>Year:</strong> {publication.year}
@@ -149,9 +162,6 @@ export default function ResultsPage() {
               <p className="text-center">No other publications found.</p>
             )}
           </Card>
-
-          {/* Publication Distribution Pie Chart */}
-          
 
           {/* Journals Section */}
           <Card className="p-4 md:p-6">
